@@ -112,7 +112,8 @@ class MY_Email extends CI_Email
         $configurator->setEndpoint('https://api.eu.mailgun.net/v3/'.$this->_mailgun_domain.'/messages');
         $configurator->setDebug(true);
         $configurator->setApiKey($this->_mailgun_key);
-        $mailgun = Mailgun::configure($configurator);
+        // $mailgun = Mailgun::configure($configurator);
+        $mailgun = new Mailgun($configurator);
 
         $data = array(
             'from'           => $this->_from,
@@ -147,8 +148,9 @@ class MY_Email extends CI_Email
             $data['attachment[' . ($i+1) . ']'] = '@' . $this->_attachments[$i];
         }
 
-        $result = $mailgun->sendMessage($this->_mailgun_domain, $data);
-
+        // $result = $mailgun->sendMessage($this->_mailgun_domain, $data);
+        $result = $mailgun->message->send($this->_mailgun_domain, $data);
+        
         return true;
     }
 
