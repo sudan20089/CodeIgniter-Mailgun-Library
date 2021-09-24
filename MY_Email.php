@@ -7,26 +7,50 @@ class MY_Email extends CI_Email
 {
 
     // Replace the below with your Mailgun key and domain
-    var $_mailgun_key    = 'key-XXX';
-    var $_mailgun_domain = 'XXX.mailgun.org';
+//     var $_mailgun_key    = 'key-XXX';
+//     var $_mailgun_domain = 'XXX.mailgun.org';
 
-    var $_to             = '';
-    var $_reply_to       = '';
-    var $_cc             = '';
-    var $_bcc            = '';
-    var $_from           = '';
-    var $_subject        = '';
-    var $_message        = '';
-    var $_tag            = '';
-    var $_attachments    = array();
-    var $_mailtype       = 'html';
+//     var $_to             = '';
+//     var $_reply_to       = '';
+//     var $_cc             = '';
+//     var $_bcc            = '';
+//     var $_from           = '';
+//     var $_subject        = '';
+//     var $_message        = '';
+//     var $_tag            = '';
+//     var $_attachments    = array();
+//     var $_mailtype       = 'html';
 
-    public function initialize($config = array()) {
+//     public function initialize($config = array()) {
 
-        // Set our mailtype
-        if(isset($config['mailtype']) && $config['mailtype'] == 'text') $this->_mailtype = 'text';
+//         // Set our mailtype
+//         if(isset($config['mailtype']) && $config['mailtype'] == 'text') $this->_mailtype = 'text';
 
-        return $this;
+//         return $this;
+//     }
+    
+    public $_mailgun_key = 'key-XXX';
+    public $_mailgun_domain = 'XXX.mailgun.org';
+    public $_to = '';
+    public $_reply_to = '';
+    public $_cc = '';
+    public $_bcc = '';
+    public $_from = '';
+    public $_subject = '';
+    public $_message = '';
+    public $_tag = '';
+    public $_attachments = array();
+    public $_mailtype = 'html';
+
+    public function __construct()
+    {
+        // Replace the below with your Mailgun key and domain]
+        $config['_mailtype'] = 'html';
+
+        parent::__construct();
+        $this->clear();
+        $this->initialize($config);
+        $this->set_newline("\n");
     }
 
     public function to($to, $name = '')
@@ -71,7 +95,7 @@ class MY_Email extends CI_Email
         return $this;
     }
 
-    public function from($from, $name = '')
+    public function from($from, $name = '', $return_path = null)
     {
         $this->_from = $name.' <'.$from.'>';
         return $this;
@@ -101,12 +125,12 @@ class MY_Email extends CI_Email
         return $this;
     }
 
-    public function attach($filename, $disposition = 'attachment')
+    public function attach($filename, $disposition = 'attachment', $newname = null, $mime = '')
     {
         return $this->attachments($attachment);
     }
 
-    public function send()
+    public function send($auto_clear = true)    
     {
         $configurator = new HttpClientConfigurator();
         $configurator->setEndpoint('https://api.eu.mailgun.net/v3/'.$this->_mailgun_domain.'/messages');
